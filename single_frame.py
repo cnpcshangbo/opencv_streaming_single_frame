@@ -4,6 +4,7 @@ import numpy as np
 import tempfile
 
 app = Flask(__name__)
+camera = None  # Declare a global variable for the camera
 
 @app.route('/')
 def index():
@@ -11,9 +12,12 @@ def index():
 
 @app.route('/single_frame')
 def single_frame():
-    camera = cv2.VideoCapture(0)
+    global camera  # Use the global variable
+
+    if camera is None:  # If the camera is not initialized, initialize it
+        camera = cv2.VideoCapture(0)
+
     ret, frame = camera.read()
-    camera.release()
 
     if not ret:
         return "Could not get frame", 400
